@@ -154,6 +154,237 @@ python backend/app/services/pyq_parser.py
 
 4. Timetable → Auto-syncs with Google Calendar.
 
+📑 Product Requirements Document (PRD)
+
+Product Name: HexamGen – Gamified AI-Powered Academic Scheduler & Smart Learning Assistant
+Team: HexamGen (MESCOE, Pune)
+
+1. Overview
+
+Problem: Students and faculty struggle with fragmented academic workflows — timetable clashes, scattered PYQs/notes, and passive, unstructured study practices.
+
+Solution: HexamGen is an AI-powered academic assistant that unifies smart scheduling, PYQ analysis, adaptive quiz generation, and gamification into a single platform. It automates scheduling, identifies high-priority topics, generates practice quizzes, and motivates learning through gamified rituals.
+
+Target Users:
+
+Students – need smart timetables, targeted practice, engaging learning.
+
+Faculty/Admins – need efficient scheduling, reduced clash management, insights into student progress.
+
+2. Goals & Non-Goals
+
+Goals:
+
+Generate conflict-free timetables & sync with Google Calendar.
+
+Analyze PYQs to identify frequent/high-weightage topics.
+
+Auto-generate adaptive quizzes & flashcards with AI.
+
+Implement gamification (leaderboards, badges, streaks).
+
+Provide dashboards for students & faculty.
+
+Non-Goals (MVP):
+
+Full-scale AI tutoring for all subjects.
+
+Offline mode for all features.
+
+Large-scale deployment (beyond hackathon scope).
+
+3. Key Features & Requirements
+A. Smart Timetable Manager
+
+Inputs: Class schedules, faculty availability.
+
+Processing: Constraint Solver (graph coloring/OR-Tools).
+
+Outputs: Conflict-free timetable + Calendar sync.
+
+Priority: High
+
+B. PYQ Analyzer
+
+Inputs: Past Year Question papers (PDF/CSV).
+
+Processing: NLP (spaCy/regex) → topic extraction & frequency analysis.
+
+Outputs: Topic frequency heatmap.
+
+Priority: High
+
+C. Quiz & Flashcard Generator
+
+Inputs: Topics/subtopics from PYQ analysis.
+
+Processing: LLM-based question generation (T5-small/DistilBERT).
+
+Outputs: Admin-reviewed quizzes + flashcards.
+
+Priority: High
+
+D. Gamification Layer
+
+Features: Leaderboard, XP points, streaks, badges.
+
+Integration: Firebase (real-time updates).
+
+Priority: Medium-High
+
+E. Analytics Dashboard
+
+For Students: Progress tracker, quiz history, streaks.
+
+For Faculty: Topic coverage, student engagement reports.
+
+Priority: Medium
+
+4. User Stories
+
+Student:
+“As a student, I want my timetable auto-synced to Google Calendar, so I never miss class changes.”
+“As a student, I want AI to highlight important PYQ topics, so I know what to study first.”
+“As a student, I want quizzes to feel fun and rewarding, so I stay consistent.”
+
+Faculty/Admin:
+“As a faculty member, I want automatic timetable clash detection, so I save time on manual scheduling.”
+“As a faculty member, I want to see which topics students practice most, so I can adjust my teaching.”
+
+5. Success Metrics (Hackathon Demo)
+
+✅ Timetable → Generated in <30 seconds, synced with Google Calendar.
+
+✅ PYQs → 2–3 years analyzed, frequency heatmap visible.
+
+✅ Quizzes → 10 MCQs auto-generated & admin-approved.
+
+✅ Engagement → Leaderboard updates live after quiz.
+
+✅ Demo Flow → End-to-end journey works in <5 minutes.
+
+6. Tech Stack
+Component	Tools/Tech
+Backend	FastAPI/Django REST, Docker
+Frontend (Web)	React + Tailwind
+Mobile	Java/Kotlin (Android)
+Database	PostgreSQL/MongoDB + Firebase (leaderboard)
+AI/NLP	spaCy, NLTK, Hugging Face (T5/DistilBERT)
+Timetable Solver	OR-Tools, Graph Coloring
+APIs	Google Calendar API, OAuth
+Visualization	Plotly, Matplotlib
+7. Risks & Mitigation
+
+AI generates poor questions → Add manual admin review step.
+
+Time crunch during hackathon → Focus on MVP: timetable + quiz + leaderboard.
+
+Limited compute power → Use smaller models (DistilBERT, T5-small).
+
+UI delays → Start with wireframes + Tailwind prebuilt components.
+
+Structure :
+HexamGen/
+│── README.md                 # Project overview + setup guide
+│── requirements.txt          # Python dependencies
+│── package.json              # Frontend dependencies
+│── docker-compose.yml        # Container orchestration (if used)
+│── .gitignore
+│
+├── backend/                  # APIs + AI modules
+│   ├── app/
+│   │   ├── main.py           # FastAPI entry point
+│   │   ├── routes/           # API routes
+│   │   │   ├── timetable.py
+│   │   │   ├── quiz.py
+│   │   │   ├── user.py
+│   │   │   └── leaderboard.py
+│   │   ├── services/         # Business logic
+│   │   │   ├── timetable_solver.py
+│   │   │   ├── pyq_parser.py
+│   │   │   ├── quiz_generator.py
+│   │   │   └── gamification.py
+│   │   ├── models/           # DB models (SQLAlchemy)
+│   │   │   ├── user.py
+│   │   │   ├── timetable.py
+│   │   │   ├── quiz.py
+│   │   │   └── leaderboard.py
+│   │   ├── utils/            # Helper functions
+│   │   │   ├── nlp_utils.py
+│   │   │   ├── calendar_sync.py
+│   │   │   └── auth.py
+│   │   └── database.py
+│   └── tests/
+│       ├── test_timetable.py
+│       ├── test_quiz.py
+│       ├── test_pyq_parser.py
+│       └── test_api.py
+│
+├── ai_models/                # AI/ML modules
+│   ├── quiz_generation.ipynb # Notebook for MCQ generation
+│   ├── pyq_analysis.ipynb    # Topic frequency analysis
+│   ├── models/               # Saved/optimized models
+│   └── evaluation/           # Model evaluation results
+│
+├── frontend/                 # React + Tailwind frontend
+│   ├── public/
+│   ├── src/
+│   │   ├── components/       # Reusable UI components
+│   │   │   ├── Dashboard.js
+│   │   │   ├── QuizUI.js
+│   │   │   ├── Leaderboard.js
+│   │   │   └── CalendarSync.js
+│   │   ├── pages/            # Page-level components
+│   │   │   ├── Home.js
+│   │   │   ├── Timetable.js
+│   │   │   ├── Quiz.js
+│   │   │   └── Profile.js
+│   │   ├── assets/           # Icons, images
+│   │   ├── styles/           # CSS/Tailwind configs
+│   │   ├── App.js
+│   │   └── index.js
+│   └── package.json
+│
+├── mobile/                   # Android app (optional)
+│   ├── app/src/main/java/com/hexamgen/
+│   │   ├── activities/
+│   │   ├── adapters/
+│   │   └── utils/
+│   └── build.gradle
+│
+├── database/                 # DB schema + seed data
+│   ├── migrations/
+│   ├── schema.sql
+│   └── seed_data.sql
+│
+├── docs/                     # Documentation & design
+│   ├── roadmap.md
+│   ├── architecture_diagram.png
+│   ├── gantt_timeline.png
+│   ├── ui_wireframes/
+│   └── pitch_deck/
+│
+└── data/                     # Sample data for testing
+├── pyqs/                 # Past year question papers (PDFs)
+├── processed/            # Parsed question JSONs
+└── quizzes/              # Generated quizzes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
