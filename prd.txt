@@ -1,0 +1,128 @@
+📑 Product Requirements Document (PRD)
+
+Product Name: HexamGen – Gamified AI-Powered Academic Scheduler & Smart Learning Assistant
+Team: HexamGen (MESCOE, Pune)
+
+1. Overview
+
+Problem: Students and faculty struggle with fragmented academic workflows — timetable clashes, scattered PYQs/notes, and passive, unstructured study practices.
+
+Solution: HexamGen is an AI-powered academic assistant that unifies smart scheduling, PYQ analysis, adaptive quiz generation, and gamification into a single platform. It automates scheduling, identifies high-priority topics, generates practice quizzes, and motivates learning through gamified rituals.
+
+Target Users:
+
+Students – need smart timetables, targeted practice, engaging learning.
+
+Faculty/Admins – need efficient scheduling, reduced clash management, insights into student progress.
+
+2. Goals & Non-Goals
+
+Goals:
+
+Generate conflict-free timetables & sync with Google Calendar.
+
+Analyze PYQs to identify frequent/high-weightage topics.
+
+Auto-generate adaptive quizzes & flashcards with AI.
+
+Implement gamification (leaderboards, badges, streaks).
+
+Provide dashboards for students & faculty.
+
+Non-Goals (MVP):
+
+Full-scale AI tutoring for all subjects.
+
+Offline mode for all features.
+
+Large-scale deployment (beyond hackathon scope).
+
+3. Key Features & Requirements
+A. Smart Timetable Manager
+
+Inputs: Class schedules, faculty availability.
+
+Processing: Constraint Solver (graph coloring/OR-Tools).
+
+Outputs: Conflict-free timetable + Calendar sync.
+
+Priority: High
+
+B. PYQ Analyzer
+
+Inputs: Past Year Question papers (PDF/CSV).
+
+Processing: NLP (spaCy/regex) → topic extraction & frequency analysis.
+
+Outputs: Topic frequency heatmap.
+
+Priority: High
+
+C. Quiz & Flashcard Generator
+
+Inputs: Topics/subtopics from PYQ analysis.
+
+Processing: LLM-based question generation (T5-small/DistilBERT).
+
+Outputs: Admin-reviewed quizzes + flashcards.
+
+Priority: High
+
+D. Gamification Layer
+
+Features: Leaderboard, XP points, streaks, badges.
+
+Integration: Firebase (real-time updates).
+
+Priority: Medium-High
+
+E. Analytics Dashboard
+
+For Students: Progress tracker, quiz history, streaks.
+
+For Faculty: Topic coverage, student engagement reports.
+
+Priority: Medium
+
+4. User Stories
+
+Student:
+“As a student, I want my timetable auto-synced to Google Calendar, so I never miss class changes.”
+“As a student, I want AI to highlight important PYQ topics, so I know what to study first.”
+“As a student, I want quizzes to feel fun and rewarding, so I stay consistent.”
+
+Faculty/Admin:
+“As a faculty member, I want automatic timetable clash detection, so I save time on manual scheduling.”
+“As a faculty member, I want to see which topics students practice most, so I can adjust my teaching.”
+
+5. Success Metrics (Hackathon Demo)
+
+✅ Timetable → Generated in <30 seconds, synced with Google Calendar.
+
+✅ PYQs → 2–3 years analyzed, frequency heatmap visible.
+
+✅ Quizzes → 10 MCQs auto-generated & admin-approved.
+
+✅ Engagement → Leaderboard updates live after quiz.
+
+✅ Demo Flow → End-to-end journey works in <5 minutes.
+
+6. Tech Stack
+Component	Tools/Tech
+Backend	FastAPI/Django REST, Docker
+Frontend (Web)	React + Tailwind
+Mobile	Java/Kotlin (Android)
+Database	PostgreSQL/MongoDB + Firebase (leaderboard)
+AI/NLP	spaCy, NLTK, Hugging Face (T5/DistilBERT)
+Timetable Solver	OR-Tools, Graph Coloring
+APIs	Google Calendar API, OAuth
+Visualization	Plotly, Matplotlib
+7. Risks & Mitigation
+
+AI generates poor questions → Add manual admin review step.
+
+Time crunch during hackathon → Focus on MVP: timetable + quiz + leaderboard.
+
+Limited compute power → Use smaller models (DistilBERT, T5-small).
+
+UI delays → Start with wireframes + Tailwind prebuilt components.
