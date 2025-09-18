@@ -291,35 +291,56 @@ HexamGen/
 │── docker-compose.yml        # Container orchestration (if used)
 │── .gitignore
 │
-├── backend/                  # APIs + AI modules
-│   ├── app/
-│   │   ├── main.py           # FastAPI entry point
-│   │   ├── routes/           # API routes
-│   │   │   ├── timetable.py
-│   │   │   ├── quiz.py
-│   │   │   ├── user.py
-│   │   │   └── leaderboard.py
-│   │   ├── services/         # Business logic
-│   │   │   ├── timetable_solver.py
-│   │   │   ├── pyq_parser.py
-│   │   │   ├── quiz_generator.py
-│   │   │   └── gamification.py
-│   │   ├── models/           # DB models (SQLAlchemy)
-│   │   │   ├── user.py
-│   │   │   ├── timetable.py
-│   │   │   ├── quiz.py
-│   │   │   └── leaderboard.py
-│   │   ├── utils/            # Helper functions
-│   │   │   ├── nlp_utils.py
-│   │   │   ├── calendar_sync.py
-│   │   │   └── auth.py
-│   │   └── database.py
-│   └── tests/
-│       ├── test_timetable.py
-│       ├── test_quiz.py
-│       ├── test_pyq_parser.py
-│       └── test_api.py
-│
+├── _backend/
+├── app/
+│   ├── __init__.py
+│   ├── main.py   # FastAPI app entrypoint
+│   ├── core/
+│   │   ├── config.py  # config/env loading
+│   │   └── security.py # JWT utils
+│   ├── models/
+│   │   ├── user.py
+│   │   ├── pyq.py
+│   │   ├── quiz.py
+│   │   ├── timetable.py
+│   │   └── leaderboard.py
+│   ├── db/
+│   │   ├── base.py  # DB session, engine
+│   │   └── init_db.py
+│   ├── auth/
+│   │   ├── schemas.py
+│   │   ├── crud.py
+│   │   ├── routes.py
+│   │   └── utils.py
+│   ├── pyq/
+│   │   ├── schemas.py
+│   │   ├── crud.py
+│   │   ├── routes.py
+│   │   └── parser.py
+│   ├── quiz/
+│   │   ├── schemas.py
+│   │   ├── crud.py
+│   │   ├── routes.py
+│   │   └── generator.py
+│   ├── timetable/
+│   │   ├── schemas.py
+│   │   ├── crud.py
+│   │   ├── routes.py
+│   │   └── scheduler.py
+│   ├── leaderboard/
+│   │   ├── schemas.py
+│   │   ├── crud.py
+│   │   ├── routes.py
+│   │   └── firebase_client.py
+│   ├── analytics/
+│       ├── routes.py
+│       ├── crud.py
+│       └── schemas.py
+├── migrations/
+├── .env
+├── Dockerfile
+├── requirements.txt
+└── README.md
 ├── ai_models/                # AI/ML modules
 │   ├── quiz_generation.ipynb # Notebook for MCQ generation
 │   ├── pyq_analysis.ipynb    # Topic frequency analysis
@@ -369,6 +390,13 @@ HexamGen/
 ├── processed/            # Parsed question JSONs
 └── quizzes/              # Generated quizzes
 
+
+
+Root Cause: Lack of automation in scheduling and content delivery workflows.
+HexamGen Solution – How It Addresses the Root Causes Root Cause HexamGen Solution No central PYQ analysis AI-powered PYQ Analyzer → extracts topics,
+finds high-frequency questions, builds knowledge maps. Static, clash-prone timetables Smart Timetable Manager → CSP/graph-based scheduling + Google
+Calendar sync for instant updates. Passive, boring revision Adaptive Quiz Generator + Gamification → auto-MCQs, flashcards, streaks, badges, leaderboards.
+Faculty admin overload Admin Portal → upload PYQs, review AI-generated quizzes, approve/schedule in one click. RCA Visualization (5 Whys)
 
 
 
