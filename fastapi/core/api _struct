@@ -1,0 +1,12 @@
+hexamgen/
+├─ core/
+│  ├─ __init__.py
+│  ├─ db.py
+│  └─ config.py
+├─ auth/
+│  ├─ __init__.py
+│  ├─ models.py
+│  ├─ schemas.py
+│  ├─ service.py
+│  └─ routes.py
+└─ main.py
