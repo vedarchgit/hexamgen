@@ -70,4 +70,5 @@ Change these in .env file if needed.
         venv\Scripts\activate.ps1  # Windows PowerShell
 
 pip install -r requirements.txt
+
 uvicorn main:app --reload
