@@ -1,0 +1,52 @@
+
+STRUCTURE
+hexamgen_backend/
+├── app/
+│   ├── __init__.py
+│   ├── main.py   # FastAPI app entrypoint
+│   ├── core/
+│   │   ├── config.py  # config/env loading
+│   │   └── security.py # JWT utils
+│   ├── models/
+│   │   ├── user.py
+│   │   ├── pyq.py
+│   │   ├── quiz.py
+│   │   ├── timetable.py
+│   │   └── leaderboard.py
+│   ├── db/
+│   │   ├── base.py  # DB session, engine
+│   │   └── init_db.py
+│   ├── auth/
+│   │   ├── schemas.py
+│   │   ├── crud.py
+│   │   ├── routes.py
+│   │   └── utils.py
+│   ├── pyq/
+│   │   ├── schemas.py
+│   │   ├── crud.py
+│   │   ├── routes.py
+│   │   └── parser.py
+│   ├── quiz/
+│   │   ├── schemas.py
+│   │   ├── crud.py
+│   │   ├── routes.py
+│   │   └── generator.py
+│   ├── timetable/
+│   │   ├── schemas.py
+│   │   ├── crud.py
+│   │   ├── routes.py
+│   │   └── scheduler.py
+│   ├── leaderboard/
+│   │   ├── schemas.py
+│   │   ├── crud.py
+│   │   ├── routes.py
+│   │   └── firebase_client.py
+│   ├── analytics/
+│       ├── routes.py
+│       ├── crud.py
+│       └── schemas.py
+├── migrations/
+├── .env
+├── Dockerfile
+├── requirements.txt
+└── README.md

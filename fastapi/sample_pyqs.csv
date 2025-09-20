@@ -1,0 +1,4 @@
+subject,year,question_text
+"Data Structures",2022,"What is a binary search tree? Explain its properties."
+"Algorithms",2022,"Describe Dijkstra's algorithm for finding the shortest path in a graph."
+"Databases",2021,"What is normalization in the context of relational databases? Explain 1NF, 2NF, and 3NF."

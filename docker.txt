@@ -1,0 +1,26 @@
+Make sure Firebase credentials JSON file is accessible inside the container or mounted as volume.
+
+Build Docker image
+ copy
+bash
+
+docker build -t hexamgen-backend .
+Run PostgreSQL database
+Use Docker or your managed DB instance. Example using Docker Compose or standalone:
+
+ copy
+bash
+
+docker run --name hexamgen-postgres -e POSTGRES_USER=your_pg_user -e POSTGRES_PASSWORD=your_pg_password -e POSTGRES_DB=your_pg_db -p 5432:5432 -d postgres
+Run the backend container
+ copy
+bash
+
+docker run -d --name hexamgen-backend --env-file .env -p 8000:8000 hexamgen-backend
+Access API docs
+Open your browser at: http://localhost:8000/docs to see Swagger UI for all endpoints.
+
+Initialize DB
+On first run, the app creates DB tables automatically on startup.
+
+Scaling and microservices

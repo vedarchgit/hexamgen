@@ -1,0 +1,81 @@
+To run and test the HexamGen backend locally, follow these steps:
+
+1. Prerequisites
+Install Python 3.10+ on your system
+Install PostgreSQL database (locally or via Docker)
+Have Firebase credentials JSON file ready
+Have Google Calendar API key ready
+(Optional) Docker installed if you want to run in containers
+2. Setup environment variables
+Create a .env file in your project root with the following variables filled:
+
+ copy
+javascript
+
+POSTGRES_USER=your_pg_user
+POSTGRES_PASSWORD=your_pg_password
+POSTGRES_DB=your_pg_db
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+
+JWT_SECRET_KEY=your_jwt_secret_key
+
+FIREBASE_CREDENTIALS=path/to/your/firebase_credentials.json
+GOOGLE_CALENDAR_API_KEY=your_google_calendar_api_key
+Make sure the Firebase credentials file path is accessible and correct.
+
+3. Install dependencies
+In your project root, create a virtual environment and install required packages:
+
+ copy
+bash
+
+python -m venv venv
+source venv/bin/activate  # Linux/macOS
+# or
+venv\Scripts\activate  # Windows
+
+pip install -r requirements.txt
+4. Setup PostgreSQL database
+Create the database with credentials matching your .env file.
+If using Docker:
+ copy
+bash
+
+docker run --name hexamgen-postgres -e POSTGRES_USER=your_pg_user -e POSTGRES_PASSWORD=your_pg_password -e POSTGRES_DB=your_pg_db -p 5432:5432 -d postgres
+Ensure the database is running and accessible.
+
+5. Initialize database tables
+Tables will be created automatically on app startup by init_db() in main.py.
+
+Alternatively, you can run a script to do this manually:
+
+ copy
+bash
+
+python -c "from app.db.init_db import init_db; init_db()"
+6. Run the FastAPI backend server
+ copy
+bash
+
+uvicorn app.main:app --reload
+The --reload flag enables auto-reload on code changes.
+Server will start on http://127.0.0.1:8000
+7. Test the API
+Open Swagger UI docs at:
+http://127.0.0.1:8000/docs
+
+You can test endpoints such as:
+
+POST /auth/register to create user
+POST /auth/login to get JWT token
+Use JWT token in "Authorize" button in Swagger UI to authenticate
+Upload PYQ files at /pyq/upload
+Create quizzes at /quiz/create
+Upload timetable at /timetable/upload
+View leaderboard at /leaderboard/get
+8. Notes
+For Firebase integration and Google Calendar API calls, ensure your credentials and API keys are valid.
+Large file uploads and ML model inference may take time; monitor logs for progress.
+For production deployment, consider HTTPS, proper error handling, logging, and scaling.
+If you want, I can help you write Postman collection or simple test scripts for automated testing.
