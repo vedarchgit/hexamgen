@@ -1,0 +1,3 @@
+[submodule "fastapi"]
+	path = fastapi
+	url = https://github/vedarch/hexamgen/tree/mt
