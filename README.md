@@ -15,11 +15,12 @@ Git
 
 Clone repo:
      git clone --branch mt --single-branch https://github.com/vedarchgit/hexamgen.git
-      cd hexamgen
+      ;cd hexamgen
 
 Run setup script:
 
 chmod +x run_hexamgen.sh
+
 ./run_hexamgen.sh
 
 
@@ -31,11 +32,13 @@ Open FastAPI at:
 Clone repo:
       
       git clone --branch mt --single-branch https://github.com/vedarchgit/hexamgen.git
-      cd hexamgen
+      ;cd hexamgen
 
 
 Run setup script in PowerShell (Admin):
+        
         cd hexamgen
+        
         .\run_hexamgen.ps1
         
 
