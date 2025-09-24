@@ -9,3 +9,5 @@ next-env.d.ts
 
 # Dependencies
 package-lock.json
+
+/lib/generated/prisma

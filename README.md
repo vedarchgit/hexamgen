@@ -1,4 +1,4 @@
-🚀 HexamGen Setup Guide
+can we make sim🚀 HexamGen Setup Guide
 
 HexamGen is a FastAPI + PostgreSQL academic assistant.
 Follow the steps below to set it up locally.
