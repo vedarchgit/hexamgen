@@ -106,6 +106,14 @@ export default function HexamGenPage() {
           <Badge variant="secondary" className="bg-sky-500/20 text-sky-200 border-sky-400/30">
             Streak: 7 days
           </Badge>
+
+          {/* About link */}
+          <Link href="/about">
+            <Button variant="ghost" className="text-white hover:bg-white/10">
+              About
+            </Button>
+          </Link>
+
           <Button variant="ghost" size="icon" className="text-white hover:bg-white/10">
             <Home className="h-5 w-5" />
           </Button>
