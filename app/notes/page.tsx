@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowLeft, BookOpen, Download, Eye, Search, Filter, GraduationCap } from "lucide-react"
+import { ArrowLeft, BookOpen, Download, Eye, Search, Filter, GraduationCap, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -165,6 +165,12 @@ export default function NotesPage() {
             <Filter className="h-4 w-4 mr-2" />
             Filter
           </Button>
+          <Link href="/notes/new">
+            <Button variant="solid" size="sm" className="bg-amber-500 hover:bg-amber-600 text-black">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Note
+            </Button>
+          </Link>
         </div>
       </header>
 

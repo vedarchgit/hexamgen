@@ -35,7 +35,7 @@ class Note(Base):
     title: Mapped[str] = mapped_column(String(200))
     content_md: Mapped[str | None] = mapped_column(Text)
     content_url: Mapped[str | None] = mapped_column(String(255))
-    created_by: Mapped[str] = mapped_column(String(64), ForeignKey("users.id"))
+    created_by: Mapped[str | None] = mapped_column(String(64), ForeignKey("users.id"), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=now)
 
 class Quiz(Base):
