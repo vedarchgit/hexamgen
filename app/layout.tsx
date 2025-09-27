@@ -5,6 +5,10 @@ import { GeistMono } from "geist/font/mono"
 import { Suspense } from "react"
 import "./globals.css"
 
+import QueryProvider from "@/components/query-provider";
+
+import { Toaster } from "@/components/ui/toaster";
+
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" })
 
 export const metadata: Metadata = {
@@ -21,7 +25,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${GeistMono.variable} antialiased dark`}>
       <body className={`font-sans`}>
-        <Suspense fallback={null}>{children}</Suspense>
+        <QueryProvider>
+          <Suspense fallback={null}>{children}</Suspense>
+          <Toaster />
+        </QueryProvider>
       </body>
     </html>
   )

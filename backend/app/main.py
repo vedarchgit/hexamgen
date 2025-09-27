@@ -1,11 +1,17 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+import os
 from .core.config import settings
-from .routers import subjects, notes, quizzes, pyq, heatmap, gamification, leaderboard
-from .db import engine, Base
+from .routers import subjects, notes, quizzes, pyq, heatmap, gamification, leaderboard, study_plan
+
+# Create uploads directory
+os.makedirs(settings.uploads_dir, exist_ok=True)
 
 app = FastAPI(title=settings.app_name)
+
+app.mount("/uploads", StaticFiles(directory=settings.uploads_dir), name="uploads")
 
 app.add_middleware(
     CORSMiddleware,
@@ -23,6 +29,7 @@ app.include_router(pyq.router, prefix=settings.api_v1_prefix)
 app.include_router(heatmap.router, prefix=settings.api_v1_prefix)
 app.include_router(gamification.router, prefix=settings.api_v1_prefix)
 app.include_router(leaderboard.router, prefix=settings.api_v1_prefix)
+app.include_router(study_plan.router, prefix=settings.api_v1_prefix)
 
 @app.get("/")
 async def root():

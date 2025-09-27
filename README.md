@@ -96,6 +96,35 @@ If you prefer to run the services manually without Docker:
     pnpm dev
     ```
 
+### Running the Application (After Setup)
+
+To run the application for development:
+
+1.  **Start the Backend:**
+    Navigate to the `backend` directory:
+    ```bash
+    cd backend
+    ```
+    Run the FastAPI application:
+    ```bash
+    uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+    ```
+
+2.  **Start the Frontend:**
+    Navigate back to the project root directory:
+    ```bash
+    cd ..
+    ```
+    Run the Next.js development server:
+    ```bash
+    pnpm dev
+    ```
+
+3.  **Access the Study Plan Feature:**
+    Open your browser and go to `http://localhost:3000/study-plan`.
+    You can then enter an exam date and subjects to generate a study plan.
+
+
 ## 📂 Project Structure
 
 ```

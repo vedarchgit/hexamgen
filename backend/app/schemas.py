@@ -2,6 +2,13 @@ from pydantic import BaseModel, Field
 from typing import List, Optional, Any
 
 # Subjects
+class SubjectCreate(BaseModel):
+    code: str
+    year: str
+    name: str
+    branch: str
+
+
 class SubjectOut(BaseModel):
     id: str
     code: str
@@ -63,3 +70,12 @@ class LeaderboardRow(BaseModel):
     user_id: str
     xp_total: int
     rank: int
+
+# Study Plan
+class StudyPlanCreate(BaseModel):
+    exam_date: str
+    subjects: List[str]
+
+class StudyPlanOut(BaseModel):
+    plan: dict
+

@@ -1,0 +1,51 @@
+
+  Backend Summary (`fastapi`):
+
+   * Technology: The backend is a Python application built with the FastAPI framework, using SQLAlchemy for asynchronous
+     database operations with a MySQL-compatible database.
+   * Architecture: It follows a standard structure with separation of concerns:
+       * main.py: Application entry point with CORS middleware and router includes.
+       * db.py: Database session management.
+       * models.py: Defines the database schema for users, subjects, notes, quizzes, gamification (XP, levels, streaks),
+         and more.
+       * schemas.py: Pydantic models for API request/response validation.
+       * routers/: Contains the logic for all API endpoints, neatly organized by feature (e.g., subjects, quizzes,
+         leaderboard).
+   * Features:
+       * Serves data for subjects, notes, quizzes, and previous year questions (PYQs).
+       * Includes a gamification system with XP events, user levels, and streaks.
+       * Provides a leaderboard.
+       * User identification is handled via a simple X-User-Id header, which is not a secure authentication method but is
+         common for initial development.
+   * Deployment: A Dockerfile is configured to containerize the backend, and it's set to run with uvicorn.
+
+  Frontend Summary (`next.js`):
+
+   * Technology: The frontend is a Next.js (React) application written in TypeScript.
+   * Architecture: It uses the Next.js App Router, with routes defined by the directory structure inside app/.
+   * UI/Styling: The project uses shadcn/ui for components and likely Tailwind CSS for styling, which is a modern and
+     popular choice.
+   * Features: The frontend has pages that correspond to the backend services:
+       * /notes: For creating and viewing notes.
+       * /quizzes: For taking quizzes.
+       * /leaderboard: To display user rankings.
+       * /heatmap: To visualize topic importance.
+       * /pyq-details: To show details for previous year questions.
+   * API Interaction: The frontend communicates with the backend via API routes. A Next.js API route also exists at
+     app/api/notes/route.ts, which may be used for frontend-specific backend tasks or proxying.
+
+
+notes and cousrce upoad 
+
+   * Backend:
+       * You can now add new courses via a POST request to the /api/v1/subjects endpoint.
+       * The endpoint for creating notes (/api/v1/notes) now accepts PDF and image uploads.
+   * Frontend:
+       * A new page is available at /subjects/new to add courses through a user-friendly form.
+       * The "Create Note" page at /notes/new now has a file attachment field, allowing you to upload a file directly when
+         creating a note.
+
+I've completed the study plan feature, including backend and frontend integration, state management, and component
+  refactoring. I've verified CORS, set up environment variables, added Axios, created the API endpoint, integrated React
+  Query, built the UI, and implemented toast notifications and a dedicated results component. The feature is now a complete,
+  working example following best practices. I will now provide instructions on how to run the application.

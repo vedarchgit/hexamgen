@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState, ChangeEvent } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowLeft, BookOpen, Save } from "lucide-react"
+import { ArrowLeft, BookOpen, Save, Paperclip } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -62,18 +62,40 @@ export default function NewNotePage() {
   const [title, setTitle] = useState("")
   const [subject, setSubject] = useState("")
   const [content, setContent] = useState("")
+  const [file, setFile] = useState<File | null>(null)
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFile(e.target.files[0]);
+    }
+  };
 
   const handleSaveNote = async () => {
     try {
-      const response = await fetch("/api/notes", {
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("subject_id", subject);
+      if (content) {
+        formData.append("content_md", content);
+      }
+      if (file) {
+        formData.append("file", file);
+      }
+
+      const response = await fetch("/api/v1/notes", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, subject_id: subject, content_md: content }),
+        body: formData,
+        headers: {
+          "x-user-id": "dummy-user-id", // Add a dummy user ID for now
+        },
       });
+
       if (response.ok) {
         router.push("/notes");
       } else {
-        alert("Failed to save note.");
+        const errorData = await response.json();
+        console.error("Backend error:", errorData);
+        alert(`Failed to save note: ${errorData.detail || response.statusText}`);
       }
     } catch (error) {
       console.error("Failed to save note:", error);
@@ -139,6 +161,17 @@ export default function NewNotePage() {
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="attachment" className="text-sm font-medium">Attach PDF or Image</label>
+              <div className="flex items-center gap-2">
+                <label htmlFor="file-upload" className="flex items-center gap-2 cursor-pointer text-sm text-amber-300 hover:text-amber-400">
+                    <Paperclip className="h-4 w-4" />
+                    <span>{file ? file.name : "Choose a file..."}</span>
+                </label>
+                <Input id="file-upload" type="file" onChange={handleFileChange} className="hidden" />
+              </div>
             </div>
 
             <div className="space-y-2">

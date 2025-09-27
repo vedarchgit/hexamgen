@@ -3,9 +3,24 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from ..db import get_session
 from ..models import Subject
-from ..schemas import SubjectOut
+from ..schemas import SubjectOut, SubjectCreate
+import uuid
 
 router = APIRouter(prefix="/subjects", tags=["subjects"])
+
+@router.post("", response_model=SubjectOut)
+async def create_subject(
+    data: SubjectCreate,
+    session: AsyncSession = Depends(get_session),
+):
+    subject = Subject(
+        id=str(uuid.uuid4()),
+        **data.model_dump()
+    )
+    session.add(subject)
+    await session.commit()
+    await session.refresh(subject)
+    return subject
 
 @router.get("", response_model=list[SubjectOut])
 async def list_subjects(
