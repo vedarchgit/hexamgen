@@ -6,7 +6,19 @@ from ..models import PYQ, Subject
 from ..core.config import settings
 import uuid
 import shutil
+import asyncio
+from ..services.gemini_service import gemini_service
+from pydantic import BaseModel
+from typing import List, Dict, Any
+
 router = APIRouter(prefix="/pyq", tags=["pyq"])
+
+class ActivityItem(BaseModel):
+    id: int
+    action: str
+    component: str
+    time: str
+    status: str
 
 @router.post("/upload-pyq")
 async def upload_pyq(
@@ -51,6 +63,59 @@ async def upload_pyq(
     await session.refresh(pyq)
 
     return {"message": "PYQ uploaded successfully", "pyq_id": pyq.id, "file_path": str(file_path)}
+
+@router.post("/analyze-topics-gemini")
+async def analyze_pyq_topics_with_gemini(pyq_text: str):
+    topics = await gemini_service.extract_topics(pyq_text)
+    return {"topics": topics}
+
+@router.get("/activities/recent", response_model=List[ActivityItem])
+async def get_recent_activities():
+    # Mock data for recent activities
+    mock_activities = [
+        {
+            'id': 1,
+            'action': 'DSA Quiz Attempt',
+            'component': 'Quiz Service',
+            'time': '2 mins ago',
+            'status': 'success'
+        },
+        {
+            'id': 2,
+            'action': 'PYQ Analysis (CN)',
+            'component': 'Gemini Service',
+            'time': '5 mins ago',
+            'status': 'success'
+        },
+        {
+            'id': 3,
+            'action': 'New Note Added',
+            'component': 'User Action',
+            'time': '10 mins ago',
+            'status': 'success'
+        },
+        {
+            'id': 4,
+            'action': 'ML Quiz Attempt',
+            'component': 'Quiz Service',
+            'time': '15 mins ago',
+            'status': 'success'
+        },
+        {
+            'id': 5,
+            'action': 'Study Plan Generated',
+            'component': 'AI Service',
+            'time': '20 mins ago',
+            'status': 'success'
+        },
+    ]
+    return [ActivityItem(**activity) for activity in mock_activities]
+
+@router.post("/sync")
+async def sync_system():
+    # Simulate a synchronization process
+    await asyncio.sleep(1) # Simulate some work
+    return {"message": "System synchronized successfully"}
 
 @router.get("/{subject_id}")
 async def list_pyq(subject_id: str, session: AsyncSession = Depends(get_session)):

@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, BookOpen, Award, CalendarDays, BarChart3, Upload } from "lucide-react";
+import { LayoutDashboard, BookOpen, Award, CalendarDays, BarChart3, Upload, Home } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function DashboardPage() {
@@ -32,6 +32,22 @@ export default function DashboardPage() {
         transition={{ duration: 0.5, delay: 0.2 }}
         className="relative z-10 p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
       >
+        {/* Homepage Card */}
+        <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Home className="h-5 w-5" /> Homepage
+            </CardTitle>
+            <CardDescription>Go back to the main application page.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground mb-4">Navigate to the application's starting point.</p>
+            <Link href="/">
+              <Button className="bg-amber-500 hover:bg-amber-600 text-black">Go to Homepage</Button>
+            </Link>
+          </CardContent>
+        </Card>
+
         {/* Study Plan Card */}
         <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
           <CardHeader>

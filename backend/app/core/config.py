@@ -14,6 +14,7 @@ class Settings(BaseModel):
         "DATABASE_URL",
         "mysql+asyncmy://hexamgen:hexamgen@localhost:3306/hexamgen?charset=utf8mb4",
     )
+    gemini_api_key: str | None = os.getenv("GEMINI_API_KEY")
     uploads_dir: Path = BASE_DIR / "uploads"
 
 settings = Settings()

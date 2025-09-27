@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import os
 from .core.config import settings
-from .routers import subjects, notes, quizzes, pyq, heatmap, gamification, leaderboard, study_plan
+from .routers import subjects, notes, quizzes, pyq, heatmap, gamification, leaderboard, study_plan, status
 
 # Create uploads directory
 os.makedirs(settings.uploads_dir, exist_ok=True)
@@ -30,6 +30,7 @@ app.include_router(heatmap.router, prefix=f"{settings.api_v1_prefix}/v1")
 app.include_router(gamification.router, prefix=f"{settings.api_v1_prefix}/v1")
 app.include_router(leaderboard.router, prefix=f"{settings.api_v1_prefix}/v1")
 app.include_router(study_plan.router, prefix=f"{settings.api_v1_prefix}/v1")
+app.include_router(status.router, prefix=f"{settings.api_v1_prefix}/v1")
 
 @app.get("/")
 async def root():
