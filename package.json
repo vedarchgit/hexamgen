@@ -70,5 +70,22 @@
     "tailwindcss": "^4.1.9",
     "tw-animate-css": "1.3.3",
     "typescript": "^5"
-  }
+  },
+  "description": "*Automatically synced with your [v0.app](https://v0.app) deployments*",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vedarchgit/hexamgen-frontendx.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/vedarchgit/hexamgen-frontendx/issues"
+  },
+  "homepage": "https://github.com/vedarchgit/hexamgen-frontendx#readme"
 }
