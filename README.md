@@ -10,6 +10,7 @@ HexamGen is a full-stack educational platform designed to help students prepare 
 - **🏆 Leaderboard:** Compete with peers and see your rank.
 - **🔥 Topic Heatmap:** Visualize the most frequently appearing topics in past exams.
 - **📜 PYQ Analyzer:** Review and analyze previous year questions.
+- **🗓️ Personalized Study Plan Generation:** Generate customized study schedules based on exam dates and subjects.
 
 ## 🛠️ Tech Stack
 
@@ -81,7 +82,7 @@ If you prefer to run the services manually without Docker:
 4.  **Set up a MariaDB/MySQL database** and set the `DATABASE_URL` environment variable.
 5.  **Run the backend server:**
     ```bash
-    uvicorn app.main:app --reload --port 8000
+    uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
     ```
 
 ### Frontend
