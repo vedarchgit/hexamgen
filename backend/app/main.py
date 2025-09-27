@@ -22,14 +22,14 @@ app.add_middleware(
 )
 
 # Routers
-app.include_router(subjects.router, prefix=settings.api_v1_prefix)
-app.include_router(notes.router, prefix=settings.api_v1_prefix)
-app.include_router(quizzes.router, prefix=settings.api_v1_prefix)
-app.include_router(pyq.router, prefix=settings.api_v1_prefix)
-app.include_router(heatmap.router, prefix=settings.api_v1_prefix)
-app.include_router(gamification.router, prefix=settings.api_v1_prefix)
-app.include_router(leaderboard.router, prefix=settings.api_v1_prefix)
-app.include_router(study_plan.router, prefix=settings.api_v1_prefix)
+app.include_router(subjects.router, prefix=f"{settings.api_v1_prefix}/v1")
+app.include_router(notes.router, prefix=f"{settings.api_v1_prefix}/v1")
+app.include_router(quizzes.router, prefix=f"{settings.api_v1_prefix}/v1")
+app.include_router(pyq.router, prefix=f"{settings.api_v1_prefix}/v1")
+app.include_router(heatmap.router, prefix=f"{settings.api_v1_prefix}/v1")
+app.include_router(gamification.router, prefix=f"{settings.api_v1_prefix}/v1")
+app.include_router(leaderboard.router, prefix=f"{settings.api_v1_prefix}/v1")
+app.include_router(study_plan.router, prefix=f"{settings.api_v1_prefix}/v1")
 
 @app.get("/")
 async def root():

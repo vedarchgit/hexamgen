@@ -3,8 +3,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Header
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, desc
 from ..db import get_session
-from ..models import Quiz, QuizAttempt, XPEvent, UserTotals
-from ..schemas import QuizOut, QuizSubmitIn, QuizSubmitOut
+from ..models import Quiz, QuizAttempt, XPEvent, UserTotals, Subject
+from ..schemas import QuizOut, QuizSubmitIn, QuizSubmitOut, QuizCreate
 
 router = APIRouter(prefix="/quizzes", tags=["quizzes"])
 
@@ -12,6 +12,29 @@ def require_user_id(x_user_id: str | None):
     if not x_user_id:
         raise HTTPException(status_code=401, detail="Missing X-User-Id")
     return x_user_id
+
+@router.post("/", response_model=QuizOut)
+async def create_quiz(
+    payload: QuizCreate,
+    session: AsyncSession = Depends(get_session),
+):
+    # Find the subject_id based on the subject_code
+    subject_res = await session.execute(select(Subject.id).where(Subject.code == payload.subject_code))
+    subject_id = subject_res.scalar_one_or_none()
+    if not subject_id:
+        raise HTTPException(status_code=404, detail=f"Subject with code '{payload.subject_code}' not found")
+
+    quiz = Quiz(
+        id=str(uuid.uuid4()),
+        subject_id=subject_id,
+        title=payload.title,
+        is_daily=payload.is_daily,
+        questions=[q.model_dump() for q in payload.questions], # Convert Pydantic models to dicts
+    )
+    session.add(quiz)
+    await session.commit()
+    await session.refresh(quiz)
+    return QuizOut(id=quiz.id, subject_id=quiz.subject_id, title=quiz.title, is_daily=quiz.is_daily, questions=quiz.questions)
 
 @router.get("/daily", response_model=QuizOut | None)
 async def get_daily_quiz(

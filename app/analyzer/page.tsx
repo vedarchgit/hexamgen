@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import Link from "next/link"
 import { useState } from "react"
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const SPPU_YEARS = ["2024", "2023", "2022", "2021", "2020"]
 const SPPU_BRANCHES = [
@@ -369,6 +370,37 @@ export default function AnalyzerPage() {
                   topics showing 300% growth since 2022.
                 </p>
               </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Yearly Questions Trend Chart */}
+        <section>
+          <h2 className="text-xl font-semibold text-white mb-6 text-center">Yearly Questions Trend</h2>
+          <Card className="bg-white/10 backdrop-blur-sm border-white/20 max-w-4xl mx-auto">
+            <CardContent className="p-6 h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={YEARLY_TRENDS}
+                  margin={{
+                    top: 5,
+                    right: 30,
+                    left: 20,
+                    bottom: 5,
+                  }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff30" />
+                  <XAxis dataKey="year" stroke="#ffffff" />
+                  <YAxis stroke="#ffffff" />
+                  <Tooltip
+                    cursor={{ fill: "#ffffff10" }}
+                    contentStyle={{ backgroundColor: "#1a202c", border: "none", borderRadius: "8px" }}
+                    itemStyle={{ color: "#ffffff" }}
+                  />
+                  <Legend />
+                  <Bar dataKey="questions" fill="#8884d8" name="Total Questions" />
+                </BarChart>
+              </ResponsiveContainer>
             </CardContent>
           </Card>
         </section>

@@ -53,6 +53,12 @@ class QuizSubmitOut(BaseModel):
     score: int
     xp_awarded: int
 
+class QuizCreate(BaseModel):
+    subject_code: str
+    title: str
+    is_daily: bool = False
+    questions: List[Question] # Reusing the Question schema
+
 # Gamification
 class GamificationOut(BaseModel):
     xp_total: int = 0

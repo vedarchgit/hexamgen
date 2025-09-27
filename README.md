@@ -142,3 +142,69 @@ To run the application for development:
 ├── docker-compose.yml# Docker Compose configuration
 └── package.json      # Frontend dependencies and scripts
 ```
+
+---
+
+## 📝 Summary of Recent Changes
+
+### Frontend Environment Setup
+- Created `.env.local` in the project root with `NEXT_PUBLIC_API_URL=http://127.0.0.1:8000`.
+- Installed `axios` and `framer-motion` using `pnpm`.
+- Created `lib/api.ts` for a centralized Axios API client.
+- Created `components/ui/toaster.tsx`, `components/ui/switch.tsx`, `components/ui/label.tsx` for `shadcn/ui` components.
+
+### Feature Implementations
+- **Personalized Study Plan Generation (End-to-End):**
+    - **Backend:** Added `StudyPlanCreate` and `StudyPlanOut` schemas; created `backend/app/routers/study_plan.py` with `POST /study-plan` endpoint; integrated router in `main.py`.
+    - **Frontend:** Installed `@tanstack/react-query`; created `components/query-provider.tsx`; modified `app/layout.tsx` to include `QueryProvider` and `Toaster`; created `app/study-plan/layout.tsx`, `app/study-plan/components/study-plan-form.tsx`, `app/study-plan/components/study-plan-result.tsx`; modified `app/study-plan/page.tsx` for integration.
+- **PYQ Upload & Parsing:**
+    - **Backend:** Added imports to `backend/app/routers/pyq.py`; implemented `POST /pyq/upload-pyq` endpoint for PDF upload and metadata storage.
+    - **Frontend:** Created `app/pyq-upload/page.tsx` and `app/pyq-upload/layout.tsx` for the upload form.
+- **Quiz Creation:**
+    - **Backend:** Added `QuizCreate` schema to `backend/app/schemas.py`; implemented `POST /quizzes` endpoint in `backend/app/routers/quizzes.py` for quiz creation.
+    - **Frontend:** Created `app/quizzes/new/page.tsx` and `app/quizzes/new/layout.tsx` for the quiz creation form.
+- **General Content Upload:**
+    - **Frontend:** Created `app/content-upload/page.tsx` and `app/content-upload/layout.tsx` for a generic content upload form, leveraging the existing notes endpoint.
+- **Dashboard:**
+    - **Frontend:** Created `app/dashboard/page.tsx` and `app/dashboard/layout.tsx` for a unified dashboard with links to other features.
+- **Charts & Data Visualization:**
+    - **Frontend:** Modified `app/analyzer/page.tsx` to import Recharts components and added a `BarChart` visualizing `YEARLY_TRENDS` data; created `app/analyzer/layout.tsx`.
+- **Animations:**
+    - **Frontend:** Modified `app/dashboard/page.tsx` to import `motion` from `framer-motion` and applied a fade-in animation to the main content.
+
+### Bug Fixes & Refinements
+- **Frontend:** Added `"use client";` to `app/notes/new/page.tsx`; updated `toast` calls in various frontend files to correctly use `sonner` API; enhanced error handling in `app/content-upload/page.tsx` for `toast` messages.
+- **Backend:** Re-added `import os` to `backend/app/main.py`; corrected `api_v1_prefix` application to all routers in `backend/app/main.py`; modified `backend/app/routers/notes.py` to handle `subject_code` lookup and explicitly define paths; modified `backend/app/routers/pyq.py` to import `Subject` model.
+- **UI/UX:** Removed `card-hover-neon` class from `components/ui/card.tsx` to fix blur on hover.
+
+### Testing Setup (Backend)
+- Added `pytest`, `httpx`, `aiosqlite`, `pytest-asyncio` to `backend/requirements.txt`.
+- Created `backend/tests/` directory and `backend/tests/test_quizzes.py` with a basic passing test for `create_quiz` endpoint.
+- Created `backend/__init__.py`, `backend/app/__init__.py`, and `backend/tests/__init__.py` to make them Python packages.
+- Adjusted import paths in `backend/tests/test_quizzes.py` for correct module discovery.
+
+### Documentation
+- Updated `README.md` to include "Personalized Study Plan Generation" feature and ensure consistent `uvicorn` command in running instructions.
+
+---
+
+## ✨ Short Summary of Progress
+
+We have successfully implemented several core features including **Personalized Study Plan Generation, PYQ Upload, Quiz Creation, General Content Upload, Dashboard, Charts & Data Visualization, and Animations**. We've also established a **backend testing framework with a passing test**, and addressed numerous **frontend and backend bugs and UI/UX refinements**. The application now has a significantly expanded feature set and a more robust development foundation.
+
+---
+
+## 📦 Updated `backend/requirements.txt`
+
+```
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+SQLAlchemy[asyncio]==2.0.35
+asyncmy==0.2.9
+pydantic==2.9.2
+python-multipart==0.0.9
+pytest==8.2.2
+httpx==0.27.0
+aiosqlite==0.20.0
+pytest-asyncio==0.23.7
+```
