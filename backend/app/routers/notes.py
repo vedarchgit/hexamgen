@@ -7,18 +7,21 @@ from ..db import get_session
 from ..models import Note, Subject
 from ..schemas import NoteCreate, NoteOut
 from ..core.config import settings
+from ..services.gemini_service import gemini_service
+from ..core.utils import parse_pdf
+from .quizzes import require_user_id
 
-router = APIRouter(tags=["notes"])
+router = APIRouter(prefix="/notes", tags=["notes"])
 
 
-@router.post("/notes", response_model=NoteOut)
+@router.post("/", response_model=NoteOut)
 async def create_note(
     title: str = Form(...),
     subject_code: str = Form(...),
     content_md: str | None = Form(None),
     file: UploadFile | None = File(None),
     session: AsyncSession = Depends(get_session),
-    x_user_id: str | None = Header(default=None),
+    x_user_id: str = Depends(require_user_id),
 ):
     # Find the subject_id based on the subject_code
     subject_res = await session.execute(select(Subject.id).where(Subject.code == subject_code))
@@ -49,7 +52,29 @@ async def create_note(
         content_md=note.content_md, content_url=note.content_url, created_by=note.created_by
     )
 
-@router.get("/notes/{note_id}", response_model=NoteOut)
+@router.post("/analyze-concepts-gemini")
+async def analyze_concepts_with_gemini(
+    file: UploadFile = File(...),
+    x_user_id: str = Depends(require_user_id),
+):
+    text_content = await parse_pdf(file)
+    print(f"Extracted notes text for concepts: {text_content[:500]}...") # Log first 500 chars for debugging
+
+    concepts = await gemini_service.extract_concepts(text_content)
+    return {"concepts": concepts}
+
+@router.post("/generate-flashcards-gemini")
+async def generate_flashcards_with_gemini(
+    file: UploadFile = File(...),
+    x_user_id: str = Depends(require_user_id),
+):
+    text_content = await parse_pdf(file)
+    print(f"Extracted notes text for flashcards: {text_content[:500]}...") # Log first 500 chars for debugging
+
+    flashcards = await gemini_service.generate_flashcards(text_content)
+    return {"flashcards": flashcards}
+
+@router.get("/{note_id}", response_model=NoteOut)
 async def get_note(note_id: str, session: AsyncSession = Depends(get_session)):
     res = await session.execute(select(Note).where(Note.id == note_id))
     note = res.scalar_one_or_none()

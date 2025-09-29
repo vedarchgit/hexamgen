@@ -1,14 +1,16 @@
 import uuid
-from fastapi import APIRouter, Depends, HTTPException, Query, Header
+from fastapi import APIRouter, Depends, HTTPException, Query, Header, UploadFile, File, Form
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, desc
 from ..db import get_session
 from ..models import Quiz, QuizAttempt, XPEvent, UserTotals, Subject
 from ..schemas import QuizOut, QuizSubmitIn, QuizSubmitOut, QuizCreate
+from ..services.gemini_service import gemini_service
+from ..core.utils import parse_pdf
 
 router = APIRouter(prefix="/quizzes", tags=["quizzes"])
 
-def require_user_id(x_user_id: str | None):
+def require_user_id(x_user_id: str | None = Header(None)):
     if not x_user_id:
         raise HTTPException(status_code=401, detail="Missing X-User-Id")
     return x_user_id
@@ -17,6 +19,7 @@ def require_user_id(x_user_id: str | None):
 async def create_quiz(
     payload: QuizCreate,
     session: AsyncSession = Depends(get_session),
+    x_user_id: str = Depends(require_user_id),
 ):
     # Find the subject_id based on the subject_code
     subject_res = await session.execute(select(Subject.id).where(Subject.code == payload.subject_code))
@@ -36,6 +39,17 @@ async def create_quiz(
     await session.refresh(quiz)
     return QuizOut(id=quiz.id, subject_id=quiz.subject_id, title=quiz.title, is_daily=quiz.is_daily, questions=quiz.questions)
 
+@router.post("/generate-quiz-gemini")
+async def generate_quiz_with_gemini(
+    file: UploadFile = File(...),
+    x_user_id: str = Depends(require_user_id),
+):
+    text_content = await parse_pdf(file)
+    print(f"Extracted quiz text: {text_content[:500]}...") # Log first 500 chars for debugging
+
+    quiz = await gemini_service.generate_quiz(text_content)
+    return {"quiz": quiz}
+
 @router.get("/daily", response_model=QuizOut | None)
 async def get_daily_quiz(
     subject_id: str | None = Query(None),
@@ -45,7 +59,7 @@ async def get_daily_quiz(
     if subject_id:
         stmt = select(Quiz).where(Quiz.is_daily == True, Quiz.subject_id == subject_id).order_by(desc(Quiz.created_at)).limit(1)
     res = await session.execute(stmt)
-    q = res.scalar_one_or_none()
+    q = res.scalar_one_or_one_or_none()
     if not q:
         return None
     # strip answers.correct in response if present
@@ -55,9 +69,9 @@ async def get_daily_quiz(
 async def submit_quiz(
     payload: QuizSubmitIn,
     session: AsyncSession = Depends(get_session),
-    x_user_id: str = Header(default=None),
+    x_user_id: str = Depends(require_user_id),
 ):
-    user_id = require_user_id(x_user_id)
+    user_id = x_user_id
 
     # fetch quiz and compute score
     res = await session.execute(select(Quiz).where(Quiz.id == payload.quiz_id))

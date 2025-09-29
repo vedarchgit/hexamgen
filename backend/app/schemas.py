@@ -82,6 +82,71 @@ class StudyPlanCreate(BaseModel):
     exam_date: str
     subjects: List[str]
 
+from pydantic import BaseModel, Field
+from typing import List, Dict, Any
+
+class NoteCreate(BaseModel):
+    title: str
+    subject_code: str
+    content_md: str | None = None
+
+class NoteOut(BaseModel):
+    id: str
+    subject_id: str
+    title: str
+    content_md: str | None = None
+    content_url: str | None = None
+    created_by: str | None = None
+
+class QuizQuestion(BaseModel):
+    id: str
+    question: str
+    options: List[str]
+    correct: int
+
+class QuizCreate(BaseModel):
+    subject_code: str
+    title: str
+    is_daily: bool = False
+    questions: List[QuizQuestion]
+
+class QuizOut(BaseModel):
+    id: str
+    subject_id: str
+    title: str
+    is_daily: bool
+    questions: List[Dict[str, Any]]
+
+class QuizSubmitIn(BaseModel):
+    quiz_id: str
+    answers: Dict[str, int]
+
+class QuizSubmitOut(BaseModel):
+    score: int
+    xp_awarded: int
+
+class StudyPlanCreate(BaseModel):
+    exam_date: str
+    subjects: List[str]
+
 class StudyPlanOut(BaseModel):
-    plan: dict
+    plan: Dict[str, Any]
+
+class Concept(BaseModel):
+    concept: str
+    definition: str
+
+class Flashcard(BaseModel):
+    front: str
+    back: str
+
+class QuizQuestionGenerated(BaseModel):
+    question: str
+    options: List[str]
+    answer: str
+
+class StudyPlanGenerated(BaseModel):
+    date: str
+    topics: List[str]
+
 

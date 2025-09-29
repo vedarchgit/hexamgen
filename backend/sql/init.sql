@@ -1,0 +1,2 @@
+ALTER USER 'hexamgen'@'localhost' IDENTIFIED BY 'hexamgen' REQUIRE NONE;
+FLUSH PRIVILEGES;

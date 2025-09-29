@@ -7,9 +7,11 @@ from ..core.config import settings
 import uuid
 import shutil
 import asyncio
+from ..core.utils import parse_pdf
 from ..services.gemini_service import gemini_service
 from pydantic import BaseModel
 from typing import List, Dict, Any
+from .quizzes import require_user_id
 
 router = APIRouter(prefix="/pyq", tags=["pyq"])
 
@@ -27,6 +29,7 @@ async def upload_pyq(
     term: str | None = Form(None),
     file: UploadFile = File(...), # File is required
     session: AsyncSession = Depends(get_session),
+    x_user_id: str = Depends(require_user_id),
 ):
     # Find the subject_id based on the subject_code
     subject_res = await session.execute(select(Subject.id).where(Subject.code == subject_code))
@@ -44,10 +47,13 @@ async def upload_pyq(
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
     
-    # Placeholder for PDF parsing logic
-    question_text = f"Content from {file.filename} (parsing not yet implemented)"
-    topics = ["placeholder", "parsing"]
-    difficulty = 0
+    question_text = await parse_pdf(file)
+
+    print(f"Extracted PYQ text: {question_text[:500]}...") # Log first 500 chars for debugging
+
+    # Extract topics using Gemini service
+    topics = await gemini_service.extract_topics(question_text)
+    difficulty = await gemini_service.extract_difficulty(question_text)
 
     pyq = PYQ(
         id=str(uuid.uuid4()),
@@ -62,15 +68,15 @@ async def upload_pyq(
     await session.commit()
     await session.refresh(pyq)
 
-    return {"message": "PYQ uploaded successfully", "pyq_id": pyq.id, "file_path": str(file_path)}
+    return {"message": "PYQ uploaded successfully", "pyq_id": pyq.id, "file_path": str(file_path), "topics": topics}
 
 @router.post("/analyze-topics-gemini")
-async def analyze_pyq_topics_with_gemini(pyq_text: str):
+async def analyze_pyq_topics_with_gemini(pyq_text: str, x_user_id: str = Depends(require_user_id)):
     topics = await gemini_service.extract_topics(pyq_text)
     return {"topics": topics}
 
 @router.get("/activities/recent", response_model=List[ActivityItem])
-async def get_recent_activities():
+async def get_recent_activities(x_user_id: str = Depends(require_user_id)):
     # Mock data for recent activities
     mock_activities = [
         {
@@ -112,7 +118,7 @@ async def get_recent_activities():
     return [ActivityItem(**activity) for activity in mock_activities]
 
 @router.post("/sync")
-async def sync_system():
+async def sync_system(x_user_id: str = Depends(require_user_id)):
     # Simulate a synchronization process
     await asyncio.sleep(1) # Simulate some work
     return {"message": "System synchronized successfully"}

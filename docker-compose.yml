@@ -1,26 +1,14 @@
-version: "3.9"
+version: '3.8'
 services:
-  mariadb:
-    image: mariadb:11.4
+  db:
+    image: mariadb:10.5
+    restart: always
     environment:
-      MARIADB_ROOT_PASSWORD: root
-      MARIADB_DATABASE: hexamgen
-      MARIADB_USER: hexamgen
-      MARIADB_PASSWORD: hexamgen
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: hexamgen
+      MYSQL_USER: hexamgen
+      MYSQL_PASSWORD: hexamgen
     ports:
       - "3306:3306"
     volumes:
-      - mariadb_data:/var/lib/mysql
-  api:
-    build:
-      context: .
-      dockerfile: backend/Dockerfile
-    environment:
-      DATABASE_URL: mysql+asyncmy://hexamgen:hexamgen@mariadb:3306/hexamgen?charset=utf8mb4
-      FRONTEND_ORIGIN: http://localhost:3000
-    depends_on:
-      - mariadb
-    ports:
-      - "8000:8000"
-volumes:
-  mariadb_data:
+      - ./backend/config/my.cnf:/etc/mysql/conf.d/my.cnf

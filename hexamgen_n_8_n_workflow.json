@@ -1,0 +1,615 @@
+{
+  "name": "HexamGen Full Workflow with Gemini",
+  "nodes": [
+    {
+      "id": "0",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        200,
+        300
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "hexamgen",
+        "responseMode": "lastNode"
+      }
+    },
+    {
+      "id": "1",
+      "name": "Switch Feature",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [
+        400,
+        300
+      ],
+      "parameters": {
+        "propertyName": "={{$json["feature"]}}",
+        "dataType": "string",
+        "rules": [
+          {
+            "operation": "equals",
+            "value": "heatmap"
+          },
+          {
+            "operation": "equals",
+            "value": "analyze"
+          },
+          {
+            "operation": "equals",
+            "value": "sync"
+          },
+          {
+            "operation": "equals",
+            "value": "analyze_topics"
+          },
+          {
+            "operation": "equals",
+            "value": "upload_pyq"
+          },
+          {
+            "operation": "equals",
+            "value": "quiz_daily"
+          },
+          {
+            "operation": "equals",
+            "value": "quiz_submit"
+          },
+          {
+            "operation": "equals",
+            "value": "quiz_create"
+          },
+          {
+            "operation": "equals",
+            "value": "quiz_generate"
+          }
+        ]
+      }
+    },
+    {
+      "id": "2",
+      "name": "Heatmap HTTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        600,
+        50
+      ],
+      "parameters": {
+        "requestMethod": "GET",
+        "url": "http://localhost:8000/api/v1/heatmap",
+        "queryParametersUi": {
+          "parameter": [
+            {
+              "name": "subject_id",
+              "value": "={{$json.subject_id}}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "3",
+      "name": "Analyze PYQ HTTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        600,
+        100
+      ],
+      "parameters": {
+        "requestMethod": "GET",
+        "url": "http://localhost:8000/api/v1/pyq/analyze"
+      }
+    },
+    {
+      "id": "4",
+      "name": "Sync PYQ HTTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        600,
+        150
+      ],
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "http://localhost:8000/api/v1/pyq/sync",
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "X-User-Id",
+              "value": "={{$json.userId}}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6",
+      "name": "Analyze Topics HTTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        600,
+        250
+      ],
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "http://localhost:8000/api/v1/pyq/analyze-topics-gemini",
+        "jsonParameters": true,
+        "bodyParametersJson": "={ \"pyq_text\": \"{{$json.pyq_text}}\" }",
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "X-User-Id",
+              "value": "={{$json.userId}}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "8",
+      "name": "Upload PYQ HTTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        600,
+        350
+      ],
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "http://localhost:8000/api/v1/pyq/upload-pyq",
+        "options": {
+          "bodyContentType": "form-data"
+        },
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "file",
+              "value": "={{$binary.file}}"
+            },
+            {
+              "name": "subject_code",
+              "value": "={{$json.subject_code}}"
+            },
+            {
+              "name": "exam_year",
+              "value": "={{$json.exam_year}}"
+            }
+          ]
+        },
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "X-User-Id",
+              "value": "={{$json.userId}}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "9",
+      "name": "Daily Quiz HTTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        600,
+        400
+      ],
+      "parameters": {
+        "requestMethod": "GET",
+        "url": "http://localhost:8000/api/v1/quizzes/daily"
+      }
+    },
+    {
+      "id": "10",
+      "name": "Submit Quiz HTTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        600,
+        450
+      ],
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "http://localhost:8000/api/v1/quizzes/submit",
+        "jsonParameters": true,
+        "bodyParametersJson": "={ \"quiz_id\": \"{{$json.quiz_id}}\", \"answers\": {{$json.answers}} }"
+      }
+    },
+    {
+      "id": "11",
+      "name": "Create Quiz HTTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        600,
+        500
+      ],
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "http://localhost:8000/api/v1/quizzes/",
+        "jsonParameters": true,
+        "bodyParametersJson": "={ \"subject_code\": \"{{$json.subject_code}}\", \"title\": \"{{$json.title}}\", \"is_daily\": {{$json.is_daily}}, \"questions\": {{$json.questions}} }",
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "X-User-Id",
+              "value": "={{$json.userId}}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "12",
+      "name": "Generate Quiz HTTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        600,
+        550
+      ],
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "http://localhost:8000/api/v1/quizzes/generate-quiz-gemini",
+        "options": {
+          "bodyContentType": "form-data"
+        },
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "file",
+              "value": "={{$binary.file}}"
+            }
+          ]
+        },
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "X-User-Id",
+              "value": "={{$json.userId}}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "13",
+      "name": "Upload/Sync Gemini Agent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        900,
+        200
+      ],
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
+        "jsonParameters": true,
+        "options": {
+          "bodyContentType": "json"
+        },
+        "queryParametersUi": {
+          "parameter": [
+            {
+              "name": "key",
+              "value": "YOUR_GEMINI_API_KEY"
+            }
+          ]
+        },
+        "bodyParametersJson": "={\"contents\":[{\"parts\":[{\"text\":\"Process Upload/Sync Output: {{$json}}\"}]}]}"
+      }
+    },
+    {
+      "id": "14",
+      "name": "Analyze Gemini Agent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        900,
+        300
+      ],
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
+        "jsonParameters": true,
+        "options": {
+          "bodyContentType": "json"
+        },
+        "queryParametersUi": {
+          "parameter": [
+            {
+              "name": "key",
+              "value": "YOUR_GEMINI_API_KEY"
+            }
+          ]
+        },
+        "bodyParametersJson": "={\"contents\":[{\"parts\":[{\"text\":\"Process Analyze Output: {{$json}}\"}]}]}"
+      }
+    },
+    {
+      "id": "15",
+      "name": "Quiz Gemini Agent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        900,
+        400
+      ],
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
+        "jsonParameters": true,
+        "options": {
+          "bodyContentType": "json"
+        },
+        "queryParametersUi": {
+          "parameter": [
+            {
+              "name": "key",
+              "value": "YOUR_GEMINI_API_KEY"
+            }
+          ]
+        },
+        "bodyParametersJson": "={\"contents\":[{\"parts\":[{\"text\":\"Process Quiz Output: {{$json}}\"}]}]}"
+      }
+    },
+    {
+      "id": "16",
+      "name": "Central Collector",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 1,
+      "position": [
+        1150,
+        300
+      ],
+      "parameters": {
+        "mode": "passThrough"
+      }
+    },
+    {
+      "id": "17",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1350,
+        300
+      ],
+      "parameters": {
+        "mode": "lastNode"
+      }
+    }
+  ],
+  "connections": {
+    "0": {
+      "main": [
+        [
+          {
+            "node": "1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1": {
+      "main": [
+        [
+          {
+            "node": "2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "8",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "9",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "10",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "11",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2": {
+      "main": [
+        [
+          {
+            "node": "14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "3": {
+      "main": [
+        [
+          {
+            "node": "14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "6": {
+      "main": [
+        [
+          {
+            "node": "14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "4": {
+      "main": [
+        [
+          {
+            "node": "13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "8": {
+      "main": [
+        [
+          {
+            "node": "13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "9": {
+      "main": [
+        [
+          {
+            "node": "15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "10": {
+      "main": [
+        [
+          {
+            "node": "15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "11": {
+      "main": [
+        [
+          {
+            "node": "15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "12": {
+      "main": [
+        [
+          {
+            "node": "15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "13": {
+      "main": [
+        [
+          {
+            "node": "16",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "14": {
+      "main": [
+        [
+          {
+            "node": "16",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "15": {
+      "main": [
+        [
+          {
+            "node": "16",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "16": {
+      "main": [
+        [
+          {
+            "node": "17",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {},
+  "version": 1
+}
